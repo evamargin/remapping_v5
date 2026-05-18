@@ -5,21 +5,32 @@
 # %% imports
 import numpy as np
 import pandas as pd
-from evabox import utils, ephys, plotting
+import yaml
+from evabox import utils, ephys, plotting, preprocessing
+
+# %% input
+animal = "eb08"
+date = "20260425"
 
 # %% params
-animal = "eb05"
-date = "20251117"
 params = utils.params_dict(animal, date)
-print(params)
+paths = utils.build_paths(params['animal'], params['date'])
 
 # %%
-ttl_type = params['ttl_type']
-paths = utils.build_paths(params['animal'], params['date'])
-# %%
+periods = preprocessing.get_periods_df(
+    params['animal'],
+    params['date'],
+    paths['data_processed_ttl'],
+    params['ttl_type'],
+    params['fs'],
+    params['fsp']
+)
+periods
+# %% savings
 paths
+# %% save stuff
+out_dir = paths['results_session'] / "preprocessing"
+
+utils.save_as_csv(periods, "periods", out_dir)
+utils.save_as_yaml(params, "params", out_dir)
 # %%
-ttl = ephys.load_binary(paths['raw_path'], channels=[384], n_channels=385)
-ttl.shape
-# %%
-# TODO: check if Lans preprocessed merging actually includes ttl channel!
