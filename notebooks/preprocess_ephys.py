@@ -15,8 +15,9 @@ date = "20260425"
 # %% params
 params = utils.params_dict(animal, date)
 paths = utils.build_paths(params['animal'], params['date'])
-
-# %%
+#%% output folder
+out_dir = paths['results_session'] / "preprocessing"
+# %% Ephys segmentation by behavioral periods
 periods = preprocessing.get_periods_df(
     params['animal'],
     params['date'],
@@ -26,10 +27,9 @@ periods = preprocessing.get_periods_df(
     params['fsp']
 )
 periods
-# %% savings
-paths
-# %% save stuff
-out_dir = paths['results_session'] / "preprocessing"
+
+# %% save periods
+
 
 utils.save_as_csv(periods, "periods", out_dir)
 utils.save_as_yaml(params, "params", out_dir)
