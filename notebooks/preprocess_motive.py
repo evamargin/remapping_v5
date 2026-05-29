@@ -17,28 +17,9 @@ date = "20250717"
 # %% params
 params = utils.params_dict(animal, date)
 paths = utils.build_paths(params['animal'], params['date'])
-#%% output folder
-out_dir = paths['results_session'] / "preprocessing"
+
 #%%
-paths, out_dir
-
-
-# %% ---------------EPHYS segmentation by behavioral periods---------------
-
-periods = ephys.get_periods_df(
-    params['animal'],
-    params['date'],
-    paths['data_processed_ttl'],
-    params['ttl_type'],
-    params['fs'],
-    params['fps']
-)
-periods
-
-# %% save periods
-utils.save_as_csv(periods, "periods", out_dir)
-utils.save_as_yaml(params, "params", out_dir)
-
+paths
 
 # %% ---------------parse MOTIVE csv files for each subsession---------------
 
@@ -72,7 +53,7 @@ sessions_df    = utils.load_tab(animal, "Sessions")
 subsessions_df = utils.load_tab(animal, "SubSessions")
 # %%
 # --- build the HDF5 file for this session ---
-out_path = Path(paths["data_processed_motive"]) / f"{session}.h5"
+out_path = Path(paths["data_processed_motive"]) / f"{session}_motive.h5"
 out_path.parent.mkdir(parents=True, exist_ok=True)
 
 problems = motive.write_session_file(
@@ -82,7 +63,7 @@ problems = motive.write_session_file(
     mode="w",                       # 'w' = fresh build; 'a' = add subsessions to existing file
 )
 # %%
-out_path = Path(paths["data_processed_motive"]) / f"{animal}_{date}.h5"
+out_path = Path(paths["data_processed_motive"]) / f"{animal}_{date}_motive.h5"
 
 motive.process_session_file(out_path, max_gap_frames=12)
 save_dir = Path(paths["data_processed_motive"]) / "qc"
